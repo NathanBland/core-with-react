@@ -1,18 +1,30 @@
 version: '3'
 
 services:
-  core-api:
-    image: 'node:8.12.0-alpine'
-    working_dir: '/home/core-api'
+  ui:
+    image: 'node:10-alpine'
+    working_dir: '/home/core-api/ui'
     volumes:
-      - ./:/home/core-api
-    command: "sh -c 'npm install && npm run dev'"
+      - ./ui:/home/core-api/ui
+    command: "sh -c 'npm install && npm start'"
     depends_on:
-      - core-db
+      - api
     environment:
       NODE_ENV: development
     ports:
       - 3000:3000
+  api:
+    image: 'node:10-alpine'
+    working_dir: '/home/core-api/server'
+    volumes:
+      - ./server:/home/core-api/server
+    command: "sh -c 'npm install && npm run dev'"
+    depends_on:
+      - db
+    environment:
+      NODE_ENV: development
+    ports:
+      - 3001:3001
 
-  core-db:
+  db:
     image: 'mongo:4'
